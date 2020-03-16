@@ -3,7 +3,7 @@ nb_extension_export adds the Export 'Arc (.json)' option to Juptyer Notebooks.
 ## How to use
 
 ```bash
-pip install git+https://github.com/tripl-ai/nb_extension_arcexport.git
+pip install git+https://github.com/tripl-ai/nb_extension_arcexport.git@0.0.1
 ```
 
 ## Authors/Contributors
