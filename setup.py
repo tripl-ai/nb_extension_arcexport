@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='ArcExporter',
-      version='0.0.1',
+      version='0.0.2',
       description='Export Jupyter notebook as Arc .json file',
       author='Mike Seddon',
       author_email='',
