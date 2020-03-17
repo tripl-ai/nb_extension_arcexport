@@ -18,6 +18,9 @@ class ArcExporter(TemplateExporter):
     # `export_from_notebook` class member
     export_from_notebook = "Arc"
 
+    # first process the notebook
+    preprocessors = ['arcexport.ArcExporterPreprocessor']
+
     @default('file_extension')
     def _file_extension_default(self):
         """
