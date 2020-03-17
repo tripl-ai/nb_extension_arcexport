@@ -7,7 +7,7 @@
 import sys
 import os
 import json
-import import shlex
+import shlex
 
 from nbconvert.preprocessors import Preprocessor
 
