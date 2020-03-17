@@ -15,6 +15,6 @@ class ArcExporterPreprocessor(Preprocessor):
 
     def preprocess_cell(self, cell, resources, cell_index):
 
-        println(cell)
+        print(cell)
 
         return cell, resources
