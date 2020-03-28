@@ -114,9 +114,13 @@ class ArcExporter(TemplateExporter):
             # transform %sqlvalidate to JSON
             if cell_copy.source.startswith('%sqlvalidate'):
                 params = dict(s.split('=', 1) for s in shlex.split(cell_copy.source.split('\n')[0])[1:])
+
+                if not 'name' in params:
+                    raise ValueError("Missing required attribute 'name' for 'SQLValidate' stage.")
+
                 c = {}
                 c['type'] = 'SQLValidate'
-                c['name'] = params['name'] if 'name' in params else ''
+                c['name'] = params['name']
                 c['description'] = params['description'] if 'description' in params else ''
                 c['environments'] = params['environments'].split(',') if 'environments' in params else []
                 c['sql'] = (' ').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
@@ -127,13 +131,20 @@ class ArcExporter(TemplateExporter):
             # transform %sql to JSON
             if cell_copy.source.startswith('%sql'):
                 params = dict(s.split('=', 1) for s in shlex.split(cell_copy.source.split('\n')[0])[1:])
+
+                if not 'name' in params:
+                    raise ValueError("Missing required attribute 'name' for 'SQLTransform' stage.")
+
+                if not 'outputView' in params:
+                    raise ValueError("Missing required attribute 'outputView'for 'SQLTransform' stage.")
+
                 c = {}
                 c['type'] = 'SQLTransform'
-                c['name'] = params['name'] if 'name' in params else ''
+                c['name'] = params['name']
                 c['description'] = params['description'] if 'description' in params else ''
                 c['environments'] = params['environments'].split(',') if 'environments' in params else []
                 c['sql'] = (' ').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
-                c['outputView'] = params['outputView'] if 'outputView' in params else ''
+                c['outputView'] = params['outputView']
                 c['persist'] = params['persist'] == 'true' if 'persist' in params else False
                 c['sqlParams'] = dict(kv.split('=') for kv in params['sqlParams'].split(',')) if 'sqlParams' in params else {}
                 cell_copy.source = json.dumps(c, indent=2)
