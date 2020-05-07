@@ -123,7 +123,7 @@ class ArcExporter(TemplateExporter):
                 c['name'] = params['name']
                 c['description'] = params['description'] if 'description' in params else ''
                 c['environments'] = params['environments'].split(',') if 'environments' in params else []
-                c['sql'] = (' ').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
+                c['sql'] = ('\n').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
                 c['sqlParams'] = dict(kv.split('=') for kv in params['sqlParams'].split(',')) if 'sqlParams' in params else {}
                 cell_copy.source = json.dumps(c, indent=2)
                 return cell_copy
@@ -143,7 +143,7 @@ class ArcExporter(TemplateExporter):
                 c['name'] = params['name']
                 c['description'] = params['description'] if 'description' in params else ''
                 c['environments'] = params['environments'].split(',') if 'environments' in params else []
-                c['sql'] = (' ').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
+                c['sql'] = ('\n').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
                 c['outputView'] = params['outputView']
                 c['persist'] = params['persist'] == 'true' if 'persist' in params else False
                 c['sqlParams'] = dict(kv.split('=') for kv in params['sqlParams'].split(',')) if 'sqlParams' in params else {}
