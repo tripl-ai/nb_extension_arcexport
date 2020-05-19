@@ -107,11 +107,11 @@ class ArcExporter(TemplateExporter):
             cell_copy.source = cell.source.lstrip()
 
             # transform %arc by removing first line
-            if cell_copy.source.startswith('%arc'):
+            if cell_copy.source.startswith('%arc') or cell_copy.source.startswith('%log'):
                 cell_copy.source = '\n'.join(cell_copy.source.split('\n')[1::])
                 return cell_copy
 
-            # transform %sqlvalidate to JSON
+            # transform %sqlvalidate to SQLValidate JSON
             if cell_copy.source.startswith('%sqlvalidate'):
                 params = dict(s.split('=', 1) for s in shlex.split(cell_copy.source.split('\n')[0])[1:])
 
@@ -128,7 +128,7 @@ class ArcExporter(TemplateExporter):
                 cell_copy.source = json.dumps(c, indent=2)
                 return cell_copy
 
-            # transform %sql to JSON
+            # transform %sql to SQLTransform json
             if cell_copy.source.startswith('%sql'):
                 params = dict(s.split('=', 1) for s in shlex.split(cell_copy.source.split('\n')[0])[1:])
 
@@ -149,6 +149,23 @@ class ArcExporter(TemplateExporter):
                 c['sqlParams'] = dict(kv.split('=') for kv in params['sqlParams'].split(',')) if 'sqlParams' in params else {}
                 cell_copy.source = json.dumps(c, indent=2)
                 return cell_copy
+
+            # transform %log to LogExecute json
+            if cell_copy.source.startswith('%log'):
+                params = dict(s.split('=', 1) for s in shlex.split(cell_copy.source.split('\n')[0])[1:])
+
+                if not 'name' in params:
+                    raise ValueError("Missing required attribute 'name' for 'SQLTransform' stage.")
+
+                c = {}
+                c['type'] = 'SQLTransform'
+                c['name'] = params['name']
+                c['description'] = params['description'] if 'description' in params else ''
+                c['environments'] = params['environments'].split(',') if 'environments' in params else []
+                c['sql'] = ('\n').join(map(lambda line: line.strip(), cell_copy.source.split('\n')[1::]))
+                c['sqlParams'] = dict(kv.split('=') for kv in params['sqlParams'].split(',')) if 'sqlParams' in params else {}
+                cell_copy.source = json.dumps(c, indent=2)
+                return cell_copy                
 
             return cell_copy
 
